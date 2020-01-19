@@ -1,0 +1,7 @@
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\obj\Debug\HashFunctions.csprojAssemblyReference.cache
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\obj\Debug\HashFunctions.csproj.CoreCompileInputs.cache
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\bin\Debug\HashFunctions.exe.config
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\bin\Debug\HashFunctions.exe
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\bin\Debug\HashFunctions.pdb
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\obj\Debug\HashFunctions.exe
+C:\Users\Anton Pushkin\Documents\Repos\HashFunctions\HashFunctions\obj\Debug\HashFunctions.pdb
