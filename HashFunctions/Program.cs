@@ -11,18 +11,23 @@ namespace HashFunctions
         static void Main(string[] args)
         {
             string password = "this is a password";
-            //int csum = ControlSum(password);
-            //Console.WriteLine(csum);
+
             string aa = GetHash(password, 8);
             Console.WriteLine(aa);
 
             Console.ReadKey();
 
-            List<string> list = GenerateStringList(100, 10);
+            HashSet<string> list = GenerateStringList(5000, 10);
+            HashSet<string> hashset = new HashSet<string>();
             foreach (string str in list)
             {
-                Console.WriteLine(str);
+                //Console.WriteLine(str);
+                //Console.WriteLine(GetHash(str,1));
+                hashset.Add(GetHash(str, 1));
             }
+
+            Console.WriteLine("Number of test: " + list.Count);
+            Console.WriteLine("Number of collisions: " + (list.Count - hashset.Count));
             Console.ReadKey();
         }
 
@@ -30,60 +35,11 @@ namespace HashFunctions
         {
             string hash = "";
 
-            if (hashLength > 3)
-            {
-                int minLen = 2;
-                int realMinLen = 0;
-
-                int originalSalt = ControlSum(str);
-                int originalLengthStr = str.Length;
-
-                while (minLen <= hashLength)
-                    realMinLen = (minLen *= 2);
-
-                while (minLen < originalLengthStr)
-                    minLen *= 2;
-
-                if ((minLen - originalLengthStr) < minLen)
-                    minLen *= 2;
-
-                int addCount = minLen - originalLengthStr;
-
-                for (int i = 0; i < addCount; i++)
-                    str += ReceivingExistCodes(str[i] + str[i + 1]);
-
-                int maxSalt = ControlSum(str);
-                int maxLengthStr = str.Length;
-
-                while (str.Length != realMinLen)
-                {
-                    int center = str.Length / 2;
-                    hash = "";
-                    for (int i = 0; i < center; i++)
-                    {
-                        hash += ReceivingExistCodes(str[center - i] + str[center + 1]);
-                        str = hash;
-                    }
-                }
-
-                int rem = realMinLen - hashLength;
-                int countCompress = realMinLen / rem;
-                hash = "";
-
-                for (int i = 0; hash.Length < hashLength - 4; i++)
-                {
-                    if (i % countCompress == 0)
-                        hash += ReceivingExistCodes(str[i] + str[i + 1]);
-                    else
-                        hash += str[i];
-                }
-
-                hash += ReceivingExistCodes(originalSalt);
-                hash += ReceivingExistCodes(originalLengthStr);
-
-                hash += ReceivingExistCodes(maxSalt);
-                hash += ReceivingExistCodes(maxLengthStr);
-            }
+            long csum = ControlSum(str);
+            long hashint = csum;
+            hash = hashint.ToString("x");
+            //Console.WriteLine(hash);
+            //hash = csum + 123456789123456789;
 
             return hash;
         }
@@ -96,9 +52,9 @@ namespace HashFunctions
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static List<string> GenerateStringList(int listSize, int stringSize)
+        public static HashSet<string> GenerateStringList(int listSize, int stringSize)
         {
-            List<string> list = new List<string>();
+            HashSet<string> list = new HashSet<string>();
             for(int i = 0; i < listSize; i++)
             {
                 list.Add(RandomString(stringSize));
@@ -118,20 +74,20 @@ namespace HashFunctions
                 int mult = str[i] * str[i + 1];
                 int div = str[i] / str[i + 1];
 
-                sum += mult;
-                sum += div;
+                sum += mult * (10 * i);
+                sum += div * (10 * i);
             }
             return sum;
         }
 
-        public static int ReceivingExistCodes(int x)
-        {
-            x += 256;
-            while(!(((x <= 57) && (x >= 48)) || ((x <= 90) && (x <= 122)) || ((x <= 122) && (x >= 97))))
-                if (x < 48) { x += 24; }
-                else { x -= 47; }
+        //public static int ReceivingExistCodes(int x)
+        //{
+        //    x += 256;
+        //    while(!(((x <= 57) && (x >= 48)) || ((x <= 90) && (x <= 122)) || ((x <= 122) && (x >= 97))))
+        //        if (x < 48) { x += 24; }
+        //        else { x -= 47; }
 
-            return x;
-        }
+        //    return x;
+        //}
     }
 }
