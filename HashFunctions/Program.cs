@@ -10,36 +10,115 @@ namespace HashFunctions
     {
         static void Main(string[] args)
         {
-            string password = "this is a password";
 
-            string aa = GetHash(password, 8);
-            Console.WriteLine(aa);
-
-            Console.ReadKey();
-
-            HashSet<string> list = GenerateStringList(5000, 10);
-            HashSet<string> hashset = new HashSet<string>();
-            foreach (string str in list)
+            do
             {
-                //Console.WriteLine(str);
-                //Console.WriteLine(GetHash(str,1));
-                hashset.Add(GetHash(str, 1));
-            }
+                string password = "this is a password";
 
-            Console.WriteLine("Number of test: " + list.Count);
-            Console.WriteLine("Number of collisions: " + (list.Count - hashset.Count));
-            Console.ReadKey();
+                string select;
+
+                Console.WriteLine("Press 1 to enter your own password. Press 2 to run tests");
+                do
+                {
+                    select = Console.ReadLine();
+                    //Console.WriteLine(select);
+                    //Console.WriteLine(select.GetType());
+                }
+                while (select != "1" && select != "2");
+
+                if (select == "2")
+                    goto SELECT2;
+
+                Console.WriteLine("Enter new password: ");
+                password = Console.ReadLine();
+
+                string a = GetHash1(password);
+                string aa = GetHash2(password);
+                Console.WriteLine("Hash with the fisrt algorithm: " + a);
+                Console.WriteLine("Hash with the second algorithm: " + aa);
+                goto SELECT1;
+
+                SELECT2:
+
+                Console.WriteLine("Enter the number of tests and length of the password");
+                Console.WriteLine("Number of tests: ");
+                int numOfTests = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Password length: ");
+                int passLength = Convert.ToInt32(Console.ReadLine());
+
+                HashSet<string> list = GenerateStringList(numOfTests, passLength);
+                HashSet<string> hashset = new HashSet<string>();
+                foreach (string str in list)
+                {
+                    //Console.WriteLine(str);
+                    //Console.WriteLine(GetHash(str,1));
+                    hashset.Add(GetHash1(str));
+                }
+
+                Console.WriteLine("First algorithm");
+                Console.WriteLine("Number of unique passwords: " + list.Count);
+                Console.WriteLine("Number of collisions: " + (list.Count - hashset.Count));
+
+                HashSet<string> list1 = GenerateStringList(numOfTests, passLength);
+                HashSet<string> hashset1 = new HashSet<string>();
+                foreach (string str in list)
+                {
+                    //Console.WriteLine(str);
+                    //Console.WriteLine(GetHash(str,1));
+                    hashset1.Add(GetHash2(str));
+                }
+                Console.WriteLine("Second algorithm");
+                Console.WriteLine("Number of unique passwords: " + list1.Count);
+                Console.WriteLine("Number of collisions: " + (list1.Count - hashset1.Count));
+
+                SELECT1:
+
+                Console.WriteLine("Press any key to continue. Press ESCAPE key to exit");
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+
+
+           
         }
 
-        private static string GetHash(string str, int hashLength)
+        private static string GetHash1(string str)
         {
             string hash = "";
 
             long csum = ControlSum(str);
-            long hashint = csum;
+            long pass = csum;
+            long hashint = 0;
+
             hash = hashint.ToString("x");
-            //Console.WriteLine(hash);
-            //hash = csum + 123456789123456789;
+
+            for (int i = 0; i < pass.ToString().Length - 1; i++)
+            {
+                long mod = Math.Abs(Convert.ToInt16(pass.ToString()[i]) + Convert.ToInt16(pass.ToString()[i + 1]));
+                if (mod == 0)
+                {
+                    mod = 1;
+                }
+                hashint += (pass % mod * (long)Math.Pow(10, (pass.ToString().Length - i)));
+            }
+
+            hash = hashint.ToString("x");
+
+            return hash;
+        }
+
+        private static string GetHash2(string str)
+        {
+            string hash = "";
+
+            string str1 = ControlSum(str).ToString();
+            long pass = Convert.ToInt64(str1);
+            long hashint = 0;
+            
+            for (int i = 0; i < pass.ToString().Length; i++)
+            {
+                hashint += (pass % Convert.ToInt16(pass.ToString()[i])) * (long)Math.Pow(10,(pass.ToString().Length - i));
+            }
+
+            hash = hashint.ToString("x");
 
             return hash;
         }
@@ -74,8 +153,8 @@ namespace HashFunctions
                 int mult = str[i] * str[i + 1];
                 int div = str[i] / str[i + 1];
 
-                sum += mult * (10 * i);
-                sum += div * (10 * i);
+                sum += mult * (int)Math.Pow(10, i);
+                sum += div * (int)Math.Pow(10, i);
             }
             return sum;
         }
